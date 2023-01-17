@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div id="map" style="position: absolute; top: 0; left: 0; height: 100%; width: 100%;"></div>
+<button style="position: absolute; bottom: 0; left:0  ;  height: 100px; width: 100px; margin: 24px;" type="submit" onclick="GetLocation()">Show point of interest</button>
+
+
+<script>
+
+var map;
+function showMap() {
+    var mapOptions = {
+   	 center:new google.maps.LatLng(47.6964719, 13.3457347),
+   	 zoom: 10,
+   	 mapTypeId: google.maps.MapTypeId.HYBRID
+    }
+    map = new google.maps.Map(document.getElementById("map"), mapOptions);
+}
+
+function GetLocation() {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+     	if (this.readyState == 4 && this.status == 200) {
+
+   		  var parsedResponse = JSON.parse(this.responseText);
+   		  var latlon = new google.maps.LatLng(parsedResponse.latitude,parsedResponse.longitude);
+         	var marker = new google.maps.Marker({position:latlon, map:map, title:"You are here!"});
+   		  map.setCenter(latlon);
+   		  map.setZoom(20);
+     	}
+	};
+	xhttp.open("GET", "https://location-server-bendinger-location-app-api.azuremicroservices.io/location?id=" + id, true);
+	xhttp.setRequestHeader("Content-type", "application/json");
+	xhttp.send();
+}
+
+
+
+
+setInterval(timer, 1000);
+
+function timer() {
+  var id = document.getElementById("searchTxt").value;
+  if (idold != id){
+    var yhttp = new XMLHttpRequest();
+    yhttp.onreadystatechange = function() {
+       	if (this.readyState == 4 && this.status == 200) {
+
+     		  var parsedResponse = JSON.parse(this.responseText);
+          for (var loc in parsedResponse){
+
+          }
+          //alert(JSON.parse(this.responseText));
+     		  var latlon = new google.maps.LatLng(parsedResponse.latitude,parsedResponse.longitude);
+           	var marker = new google.maps.Marker({position:latlon, map:map, title:"You are here!"});
+     		  map.setCenter(latlon);
+     		  map.setZoom(20);
+       	}
+  	};
+  	yhttp.open("GET", "https://location-server-bendinger-location-app-api.azuremicroservices.io/locations?id=" + id, true);
+  	yhttp.setRequestHeader("Content-type", "application/json");
+  	yhttp.send();
+
+  };
+  var idold = id
+  var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+     	if (this.readyState == 4 && this.status == 200) {
+
+   		  var parsedResponse = JSON.parse(this.responseText);
+   		  var latlon = new google.maps.LatLng(parsedResponse.latitude,parsedResponse.longitude);
+         	var marker = new google.maps.Marker({position:latlon, map:map, title:"You are here!"});
+   		  map.setCenter(latlon);
+   		  map.setZoom(20);
+     	}
+	};
+	xhttp.open("GET", "https://location-server-bendinger-location-app-api.azuremicroservices.io/location?id=" + id, true);
+	xhttp.setRequestHeader("Content-type", "application/json");
+	xhttp.send();
+}
+
+
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmdezrpVM9uiTgn4V9keqlxYjmOz0TyyM&callback=showMap"></script>
+<input name="searchTxt" type="text" maxlength="512" id="searchTxt" class="searchField" style="position: absolute; bottom: 100px; left:0  ;  height: 20px; width: 200px; margin: 24px;"/>
+</body>
+</html>
